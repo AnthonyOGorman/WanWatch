@@ -20,13 +20,30 @@ function toDatetimeLocalValue(d: Date) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+type Preset = "today" | "week" | "month";
+
+function applyPreset(preset: Preset): { from: string; to: string } {
+  const now = new Date();
+  const to = toDatetimeLocalValue(now);
+  if (preset === "today") {
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
+    return { from: toDatetimeLocalValue(start), to };
+  }
+  if (preset === "week") {
+    const start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    return { from: toDatetimeLocalValue(start), to };
+  }
+  // month
+  const start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  return { from: toDatetimeLocalValue(start), to };
+}
+
 export function LogsView() {
   const now = new Date();
-  const [from, setFrom] = useState(() => {
-    const d = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    return toDatetimeLocalValue(d);
-  });
+  const [from, setFrom] = useState(() => toDatetimeLocalValue(new Date(now.getTime() - 24 * 60 * 60 * 1000)));
   const [to, setTo] = useState(() => toDatetimeLocalValue(now));
+  const [activePreset, setActivePreset] = useState<Preset | null>(null);
   const [okFilter, setOkFilter] = useState<"all" | "ok" | "err">("all");
   const [items, setItems] = useState<LogItem[]>([]);
   const [nextCursor, setNextCursor] = useState<number | null>(null);
@@ -34,14 +51,20 @@ export function LogsView() {
   const [error, setError] = useState<string | null>(null);
 
   const summary = useMemo(() => {
-    let ok = 0;
-    let err = 0;
-    for (const i of items) {
-      if (i.ok) ok += 1;
-      else err += 1;
-    }
+    let ok = 0, err = 0;
+    for (const i of items) { if (i.ok) ok++; else err++; }
     return { ok, err };
   }, [items]);
+
+  function selectPreset(preset: Preset) {
+    const range = applyPreset(preset);
+    setFrom(range.from);
+    setTo(range.to);
+    setActivePreset(preset);
+  }
+
+  function handleFromChange(v: string) { setFrom(v); setActivePreset(null); }
+  function handleToChange(v: string)   { setTo(v);   setActivePreset(null); }
 
   async function loadPage(reset: boolean) {
     setLoading(true);
@@ -84,6 +107,12 @@ export function LogsView() {
   const exportCsvUrl  = `/api/export.csv?${exportParams}`;
   const exportJsonUrl = `/api/export.json?${exportParams}`;
 
+  const presets: { key: Preset; label: string }[] = [
+    { key: "today", label: "Today" },
+    { key: "week",  label: "7 days" },
+    { key: "month", label: "30 days" }
+  ];
+
   return (
     <div className="space-y-4">
       <Card>
@@ -91,14 +120,32 @@ export function LogsView() {
           <CardTitle>Filters</CardTitle>
         </CardHeader>
         <CardContent>
+          {/* Quick-range presets */}
+          <div className="mb-3 flex gap-2">
+            {presets.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => selectPreset(key)}
+                className={[
+                  "rounded-md border px-3 py-1 text-xs font-medium transition-colors",
+                  activePreset === key
+                    ? "border-brand bg-brand text-white"
+                    : "border-border bg-white/5 text-muted hover:bg-white/10 hover:text-text"
+                ].join(" ")}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
           <div className="grid gap-3 md:grid-cols-4">
             <div>
               <div className="text-sm text-muted">From</div>
-              <Input type="datetime-local" value={from} onChange={(e) => setFrom(e.target.value)} />
+              <Input type="datetime-local" value={from} onChange={(e) => handleFromChange(e.target.value)} />
             </div>
             <div>
               <div className="text-sm text-muted">To</div>
-              <Input type="datetime-local" value={to} onChange={(e) => setTo(e.target.value)} />
+              <Input type="datetime-local" value={to} onChange={(e) => handleToChange(e.target.value)} />
             </div>
             <div>
               <div className="text-sm text-muted">Status</div>
@@ -117,17 +164,14 @@ export function LogsView() {
                 Refresh
               </Button>
               <a href={exportCsvUrl} className="w-full">
-                <Button variant="ghost" className="w-full">
-                  CSV
-                </Button>
+                <Button variant="ghost" className="w-full">CSV</Button>
               </a>
               <a href={exportJsonUrl} className="w-full">
-                <Button variant="ghost" className="w-full">
-                  JSON
-                </Button>
+                <Button variant="ghost" className="w-full">JSON</Button>
               </a>
             </div>
           </div>
+
           <div className="mt-3 text-sm text-muted">
             {items.length} rows • {summary.ok} ok • {summary.err} error
           </div>

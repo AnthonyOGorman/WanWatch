@@ -3,6 +3,11 @@
 </p>
 
 # WanWatch
+![Release](https://img.shields.io/github/v/release/AnthonyOGorman/WanWatch?sort=semver)
+[![Docker Publish](https://github.com/AnthonyOGorman/WanWatch/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/AnthonyOGorman/WanWatch/actions/workflows/docker-publish.yml)
+![Docker Pulls](https://img.shields.io/docker/pulls/aogorman/wanwatch)
+![Platforms](https://img.shields.io/badge/platforms-linux%2Famd64%20%7C%20linux%2Farm64-informational)
+
 
 <p align="center">
   <img src="./docs/images/dashboard-demo.png" alt="WanWatch dashboard demo" width="1100" />

@@ -1,31 +1,25 @@
 "use client";
 
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useChartTheme } from "./use-chart-theme";
 
 export function SuccessErrorChart({ data }: { data: Array<{ bucketStart: string; ok: number; err: number }> }) {
+  const t = useChartTheme();
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer>
         <BarChart data={data}>
-          <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
+          <CartesianGrid stroke={t.grid} vertical={false} />
           <XAxis
             dataKey="bucketStart"
             tickFormatter={(v) => new Date(v).toLocaleString(undefined, { hour: "2-digit", minute: "2-digit" })}
-            tick={{ fill: "rgba(255,255,255,0.6)", fontSize: 12 }}
-            axisLine={{ stroke: "rgba(255,255,255,0.12)" }}
+            tick={{ fill: t.tick, fontSize: 12 }}
+            axisLine={{ stroke: t.axis }}
           />
-          <YAxis tick={{ fill: "rgba(255,255,255,0.6)", fontSize: 12 }} axisLine={false} />
+          <YAxis tick={{ fill: t.tick, fontSize: 12 }} axisLine={false} />
           <Tooltip
-            contentStyle={{ background: "rgba(0,0,0,0.85)", border: "1px solid rgba(255,255,255,0.12)" }}
+            contentStyle={{ background: t.tooltipBg, border: `1px solid ${t.tooltipBorder}`, color: t.tooltipText }}
+            labelStyle={{ color: t.tooltipText }}
             labelFormatter={(v) => new Date(String(v)).toLocaleString()}
           />
           <Legend />
@@ -36,4 +30,3 @@ export function SuccessErrorChart({ data }: { data: Array<{ bucketStart: string;
     </div>
   );
 }
-

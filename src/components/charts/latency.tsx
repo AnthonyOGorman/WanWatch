@@ -1,32 +1,26 @@
 "use client";
 
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useChartTheme } from "./use-chart-theme";
 
 export function LatencyChart({ data }: { data: Array<{ bucketStart: string; p50: number | null; p95: number | null }> }) {
+  const t = useChartTheme();
   const filtered = data.filter((d) => d.p50 != null || d.p95 != null);
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer>
         <LineChart data={filtered}>
-          <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
+          <CartesianGrid stroke={t.grid} vertical={false} />
           <XAxis
             dataKey="bucketStart"
             tickFormatter={(v) => new Date(v).toLocaleString(undefined, { hour: "2-digit", minute: "2-digit" })}
-            tick={{ fill: "rgba(255,255,255,0.6)", fontSize: 12 }}
-            axisLine={{ stroke: "rgba(255,255,255,0.12)" }}
+            tick={{ fill: t.tick, fontSize: 12 }}
+            axisLine={{ stroke: t.axis }}
           />
-          <YAxis tick={{ fill: "rgba(255,255,255,0.6)", fontSize: 12 }} axisLine={false} />
+          <YAxis tick={{ fill: t.tick, fontSize: 12 }} axisLine={false} />
           <Tooltip
-            contentStyle={{ background: "rgba(0,0,0,0.85)", border: "1px solid rgba(255,255,255,0.12)" }}
+            contentStyle={{ background: t.tooltipBg, border: `1px solid ${t.tooltipBorder}`, color: t.tooltipText }}
+            labelStyle={{ color: t.tooltipText }}
             labelFormatter={(v) => new Date(String(v)).toLocaleString()}
           />
           <Legend />
@@ -37,4 +31,3 @@ export function LatencyChart({ data }: { data: Array<{ bucketStart: string; p50:
     </div>
   );
 }
-

@@ -1,14 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useChartTheme } from "./use-chart-theme";
 
 export function LatencyChart({ data }: { data: Array<{ bucketStart: string; p50: number | null; p95: number | null }> }) {
   const t = useChartTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const filtered = data.filter((d) => d.p50 != null || d.p95 != null);
+  if (!mounted) return <div className="h-72 w-full" />;
   return (
     <div className="h-72 w-full">
-      <ResponsiveContainer>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
         <LineChart data={filtered}>
           <CartesianGrid stroke={t.grid} vertical={false} />
           <XAxis

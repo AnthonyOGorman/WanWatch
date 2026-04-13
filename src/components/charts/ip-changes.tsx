@@ -1,13 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useChartTheme } from "./use-chart-theme";
 
 export function IpChangesChart({ data }: { data: Array<{ day: string; changes: number }> }) {
   const t = useChartTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return <div className="h-56 w-full" />;
   return (
     <div className="h-56 w-full">
-      <ResponsiveContainer>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={220}>
         <BarChart data={data}>
           <CartesianGrid stroke={t.grid} vertical={false} />
           <XAxis

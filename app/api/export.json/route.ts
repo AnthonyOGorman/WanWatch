@@ -1,15 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { requireApiAuth } from "@/lib/apiAuth";
 import { prisma } from "@/lib/db";
+import { parseDateParam } from "@/lib/dateUtils";
 
 export const dynamic = "force-dynamic";
-
-function parseDateParam(value: string | null) {
-  if (!value) return null;
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return null;
-  return d;
-}
 
 export async function GET(req: NextRequest) {
   const { unauthorized } = await requireApiAuth(req);

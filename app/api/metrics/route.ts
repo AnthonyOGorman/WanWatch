@@ -1,16 +1,11 @@
 import { prisma } from "@/lib/db";
 import { ensureSettingsRow } from "@/lib/settings";
+import { percentile } from "@/lib/mathUtils";
 
 export const dynamic = "force-dynamic";
 
 function prom(name: string, help: string, type: string, lines: string[]) {
   return [`# HELP ${name} ${help}`, `# TYPE ${name} ${type}`, ...lines, ""].join("\n");
-}
-
-function percentile(sorted: number[], p: number): number | null {
-  if (sorted.length === 0) return null;
-  const idx = Math.min(sorted.length - 1, Math.floor(p * (sorted.length - 1)));
-  return sorted[idx]!;
 }
 
 export async function GET() {

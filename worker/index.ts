@@ -116,7 +116,7 @@ async function sleepWithEarlyWake(totalMs: number) {
 async function main() {
   await ensureDataDir();
   const workerId = randomUUID();
-  console.log(`[worker] starting id=${workerId} cwd=${process.cwd()} DATABASE_URL=${process.env.DATABASE_URL ?? "(unset)"}`);
+  console.log(`[worker] starting id=${workerId} cwd=${process.cwd()}`);
 
   // Warm connection + ensure defaults.
   await ensureSettingsRow();

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { requireApiAuth } from "@/lib/apiAuth";
 import { prisma } from "@/lib/db";
+import { parseDateParam } from "@/lib/dateUtils";
 
 export const dynamic = "force-dynamic";
 
@@ -19,13 +20,6 @@ export async function GET(req: NextRequest) {
   const to = searchParams.get("to");
   const okParam = searchParams.get("ok");
   const ok = okParam === null ? null : okParam === "true";
-
-  function parseDateParam(value: string | null) {
-    if (!value) return null;
-    const d = new Date(value);
-    if (Number.isNaN(d.getTime())) return null;
-    return d;
-  }
 
   const fromD = parseDateParam(from);
   const toD = parseDateParam(to);

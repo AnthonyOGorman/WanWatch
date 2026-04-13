@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { percentile } from "@/lib/mathUtils";
 
 type Bucket = {
   startMs: number;
@@ -19,11 +20,6 @@ function floorToDayMs(ms: number) {
   return d.getTime();
 }
 
-function percentile(sorted: number[], p: number) {
-  if (sorted.length === 0) return null;
-  const idx = Math.min(sorted.length - 1, Math.max(0, Math.floor(p * (sorted.length - 1))));
-  return sorted[idx]!;
-}
 
 export async function getDashboardStats() {
   const now = Date.now();

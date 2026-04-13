@@ -1,6 +1,8 @@
 import { prisma } from "../src/lib/db";
 import { ensureSettingsRow } from "../src/lib/settings";
-import { fetchWanIpv4, type WanIpProvider } from "../src/lib/wanIp";
+import { fetchWanIpv4WithFallback, type WanIpProvider } from "../src/lib/wanIp";
+import { lookupGeo } from "../src/lib/geo";
+import { fireWebhook } from "../src/lib/webhook";
 import { mkdir } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 
@@ -8,22 +10,67 @@ async function ensureDataDir() {
   await mkdir("data", { recursive: true }).catch(() => null);
 }
 
+async function getLastSuccessfulIp(): Promise<string | null> {
+  const row = await prisma.wanIpLog.findFirst({
+    where: { ok: true },
+    orderBy: { id: "desc" },
+    select: { ip: true }
+  });
+  return row?.ip ?? null;
+}
+
 async function pollOnce(reason: "interval" | "manual") {
   const settings = await ensureSettingsRow();
   const provider = settings.ipProvider as WanIpProvider;
+  const timeoutMs = settings.pollTimeoutSeconds * 1000;
 
-  console.log(`[worker] poll start (${reason}) provider=${provider}`);
-  const result = await fetchWanIpv4(provider, { timeoutMs: 5000 });
-  if (result.ok) console.log(`[worker] poll ok ip=${result.ip} ms=${result.responseMs}`);
-  else console.log(`[worker] poll err ms=${result.responseMs ?? "?"} error=${result.error}`);
+  console.log(`[worker] poll start (${reason}) provider=${provider} timeout=${timeoutMs}ms`);
+
+  const prevIp = await getLastSuccessfulIp();
+  const result = await fetchWanIpv4WithFallback(provider, { timeoutMs });
+
+  if (result.ok) {
+    console.log(`[worker] poll ok ip=${result.ip} ms=${result.responseMs} via=${result.provider}`);
+  } else {
+    console.log(`[worker] poll err ms=${result.responseMs ?? "?"} error=${result.error}`);
+  }
+
+  const ipChanged = result.ok && result.ip !== prevIp;
+
+  let isp: string | undefined;
+  let country: string | undefined;
+
+  if (ipChanged) {
+    const geo = await lookupGeo(result.ip);
+    if (geo) {
+      isp = geo.isp;
+      country = geo.country;
+      console.log(`[worker] ip change ${prevIp ?? "none"} → ${result.ip} isp=${isp} country=${country}`);
+    } else {
+      console.log(`[worker] ip change ${prevIp ?? "none"} → ${result.ip} (geo unavailable)`);
+    }
+
+    if (settings.webhookUrl) {
+      await fireWebhook(settings.webhookUrl, {
+        event: "ip_change",
+        ts: new Date().toISOString(),
+        fromIp: prevIp ?? "",
+        toIp: result.ip,
+        isp,
+        country
+      });
+    }
+  }
 
   await prisma.wanIpLog.create({
     data: {
       ip: result.ok ? result.ip : null,
-      provider,
+      provider: result.provider,
       ok: result.ok,
       responseMs: result.responseMs,
-      error: result.ok ? null : `${reason}: ${result.error}`
+      error: result.ok ? null : `${reason}: ${result.error}`,
+      isp: isp ?? null,
+      country: country ?? null
     }
   });
 }

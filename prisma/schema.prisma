@@ -13,6 +13,8 @@ model Settings {
   retentionDays       Int      @default(90)
   enabled             Boolean  @default(true)
   ipProvider          String   @default("ipify")
+  pollTimeoutSeconds  Int      @default(5)
+  webhookUrl          String?
   updatedAt           DateTime @updatedAt
 }
 
@@ -24,14 +26,15 @@ model WanIpLog {
   ok         Boolean
   responseMs Int?
   error      String?
+  isp        String?
+  country    String?
 
   @@index([ts])
 }
 
 model PollRequest {
-  id          Int      @id @default(autoincrement())
-  requestedAt DateTime @default(now())
+  id          Int       @id @default(autoincrement())
+  requestedAt DateTime  @default(now())
   handledAt   DateTime?
   handledBy   String?
 }
-

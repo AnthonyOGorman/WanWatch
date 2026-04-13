@@ -5,17 +5,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: "#0B1220",
-        card: "#0F1B33",
-        border: "rgba(255,255,255,0.08)",
-        text: "rgba(255,255,255,0.92)",
-        muted: "rgba(255,255,255,0.62)",
-        brand: "#5B8CFF",
-        good: "#35D07F",
-        bad: "#FF5B6E"
+        bg:     "var(--wl-bg)",
+        card:   "var(--wl-card)",
+        border: "var(--wl-border)",
+        text:   "var(--wl-text)",
+        muted:  "var(--wl-muted)",
+        brand:  "#5B8CFF",
+        good:   "#35D07F",
+        bad:    "#FF5B6E"
       }
     }
   },
   plugins: []
 } satisfies Config;
-

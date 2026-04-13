@@ -2,21 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme tokens ─────────────────────────────────────────── */
+:root {
+  --wl-bg:     #0B1220;
+  --wl-card:   #0F1B33;
+  --wl-border: rgba(255, 255, 255, 0.08);
+  --wl-text:   rgba(255, 255, 255, 0.92);
+  --wl-muted:  rgba(255, 255, 255, 0.55);
+}
+
+[data-theme="light"] {
+  --wl-bg:     #EEF2FF;
+  --wl-card:   #FFFFFF;
+  --wl-border: rgba(0, 0, 0, 0.10);
+  --wl-text:   rgba(0, 0, 0, 0.87);
+  --wl-muted:  rgba(0, 0, 0, 0.52);
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
 html,
 body {
   height: 100%;
 }
 
 body {
-  color: theme(colors.text);
+  color: var(--wl-text);
   background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(91, 140, 255, 0.25), transparent 60%),
-    radial-gradient(900px 500px at 80% 0%, rgba(53, 208, 127, 0.15), transparent 55%),
-    linear-gradient(180deg, theme(colors.bg), #050916 70%);
+    radial-gradient(1200px 600px at 20% -10%, rgba(91, 140, 255, 0.20), transparent 60%),
+    radial-gradient(900px 500px at 80% 0%,   rgba(53, 208, 127, 0.10), transparent 55%),
+    linear-gradient(180deg, var(--wl-bg), #050916 70%);
+  transition: background 0.25s, color 0.15s;
+}
+
+[data-theme="light"] body {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(91, 140, 255, 0.10), transparent 60%),
+    radial-gradient(900px 500px at 80% 0%,   rgba(53, 208, 127, 0.07), transparent 55%),
+    linear-gradient(180deg, var(--wl-bg), #D8E4FF 100%);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
 }
-

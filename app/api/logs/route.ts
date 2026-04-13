@@ -14,7 +14,7 @@ function parseDateParam(value: string | null) {
 }
 
 export async function GET(req: NextRequest) {
-  const { unauthorized } = await requireApiAuth();
+  const { unauthorized } = await requireApiAuth(req);
   if (unauthorized) return unauthorized;
 
   const { searchParams } = new URL(req.url);

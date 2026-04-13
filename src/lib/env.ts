@@ -7,13 +7,15 @@ export const env = createEnv({
     ADMIN_PASSWORD: z.string().min(1),
     COOKIE_SECRET: z.string().min(32),
     DATABASE_URL: z.string().min(1).default("file:/app/data/wanlogger.db"),
-    TZ: z.string().optional()
+    TZ: z.string().optional(),
+    API_KEY: z.string().min(16).optional()
   },
   client: {},
   runtimeEnv: {
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
     COOKIE_SECRET: process.env.COOKIE_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
-    TZ: process.env.TZ
+    TZ: process.env.TZ,
+    API_KEY: process.env.API_KEY
   }
 });

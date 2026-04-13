@@ -4,10 +4,11 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-function csvCell(value: unknown) {
-  const s = value == null ? "" : String(value);
-  if (/[",\n]/.test(s)) return `"${s.replaceAll('"', '""')}"`;
-  return s;
+function parseDateParam(value: string | null) {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return d;
 }
 
 export async function GET(req: NextRequest) {
@@ -19,13 +20,6 @@ export async function GET(req: NextRequest) {
   const to = searchParams.get("to");
   const okParam = searchParams.get("ok");
   const ok = okParam === null ? null : okParam === "true";
-
-  function parseDateParam(value: string | null) {
-    if (!value) return null;
-    const d = new Date(value);
-    if (Number.isNaN(d.getTime())) return null;
-    return d;
-  }
 
   const fromD = parseDateParam(from);
   const toD = parseDateParam(to);
@@ -42,25 +36,26 @@ export async function GET(req: NextRequest) {
     orderBy: { id: "desc" }
   });
 
-  const header = ["ts", "ip", "ok", "responseMs", "provider", "error"];
-  const lines = [header.join(",")];
-  for (const r of rows) {
-    lines.push(
-      [
-        csvCell(r.ts.toISOString()),
-        csvCell(r.ip ?? ""),
-        csvCell(r.ok),
-        csvCell(r.responseMs ?? ""),
-        csvCell(r.provider),
-        csvCell(r.error ?? "")
-      ].join(",")
-    );
-  }
+  const body = JSON.stringify(
+    rows.map((r) => ({
+      id: r.id,
+      ts: r.ts.toISOString(),
+      ip: r.ip,
+      provider: r.provider,
+      ok: r.ok,
+      responseMs: r.responseMs,
+      error: r.error,
+      isp: r.isp,
+      country: r.country
+    })),
+    null,
+    2
+  );
 
-  return new NextResponse(lines.join("\n"), {
+  return new NextResponse(body, {
     headers: {
-      "content-type": "text/csv; charset=utf-8",
-      "content-disposition": 'attachment; filename="wanlogger-logs.csv"'
+      "content-type": "application/json; charset=utf-8",
+      "content-disposition": 'attachment; filename="wanlogger-logs.json"'
     }
   });
 }

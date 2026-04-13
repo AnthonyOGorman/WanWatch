@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireSession } from "@/lib/session";
 import { LogoutButton } from "@/components/logout-button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function AuthedLayout({ children }: { children: React.ReactNode }) {
   const session = await requireSession();
@@ -27,11 +28,13 @@ export default async function AuthedLayout({ children }: { children: React.React
               </Link>
             </nav>
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <LogoutButton />
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
     </div>
   );
 }
-

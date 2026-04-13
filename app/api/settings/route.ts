@@ -6,8 +6,8 @@ import { settingsInputSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const { unauthorized } = await requireApiAuth();
+export async function GET(req: NextRequest) {
+  const { unauthorized } = await requireApiAuth(req);
   if (unauthorized) return unauthorized;
 
   const settings = await ensureSettingsRow();
@@ -15,12 +15,14 @@ export async function GET() {
     pollIntervalMinutes: Math.round(settings.pollIntervalSeconds / 60),
     retentionDays: settings.retentionDays,
     enabled: settings.enabled,
-    ipProvider: settings.ipProvider
+    ipProvider: settings.ipProvider,
+    pollTimeoutSeconds: settings.pollTimeoutSeconds,
+    webhookUrl: settings.webhookUrl ?? ""
   });
 }
 
 export async function PUT(req: NextRequest) {
-  const { unauthorized } = await requireApiAuth();
+  const { unauthorized } = await requireApiAuth(req);
   if (unauthorized) return unauthorized;
 
   const raw = (await req.json().catch(() => null)) as unknown;
@@ -37,7 +39,9 @@ export async function PUT(req: NextRequest) {
       pollIntervalSeconds: next.pollIntervalMinutes * 60,
       retentionDays: next.retentionDays,
       enabled: next.enabled,
-      ipProvider: next.ipProvider
+      ipProvider: next.ipProvider,
+      pollTimeoutSeconds: next.pollTimeoutSeconds,
+      webhookUrl: next.webhookUrl || null
     }
   });
 
@@ -45,6 +49,8 @@ export async function PUT(req: NextRequest) {
     pollIntervalMinutes: Math.round(updated.pollIntervalSeconds / 60),
     retentionDays: updated.retentionDays,
     enabled: updated.enabled,
-    ipProvider: updated.ipProvider
+    ipProvider: updated.ipProvider,
+    pollTimeoutSeconds: updated.pollTimeoutSeconds,
+    webhookUrl: updated.webhookUrl ?? ""
   });
 }

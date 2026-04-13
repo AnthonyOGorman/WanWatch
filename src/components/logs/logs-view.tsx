@@ -72,14 +72,17 @@ export function LogsView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [from, to, okFilter]);
 
-  const exportUrl = useMemo(() => {
+  const exportParams = useMemo(() => {
     const params = new URLSearchParams();
     params.set("from", new Date(from).toISOString());
     params.set("to", new Date(to).toISOString());
     if (okFilter === "ok") params.set("ok", "true");
     if (okFilter === "err") params.set("ok", "false");
-    return `/api/export.csv?${params.toString()}`;
+    return params.toString();
   }, [from, to, okFilter]);
+
+  const exportCsvUrl  = `/api/export.csv?${exportParams}`;
+  const exportJsonUrl = `/api/export.json?${exportParams}`;
 
   return (
     <div className="space-y-4">
@@ -113,9 +116,14 @@ export function LogsView() {
               <Button variant="secondary" onClick={() => void loadPage(true)} disabled={loading} className="w-full">
                 Refresh
               </Button>
-              <a href={exportUrl} className="w-full">
+              <a href={exportCsvUrl} className="w-full">
                 <Button variant="ghost" className="w-full">
-                  Export CSV
+                  CSV
+                </Button>
+              </a>
+              <a href={exportJsonUrl} className="w-full">
+                <Button variant="ghost" className="w-full">
+                  JSON
                 </Button>
               </a>
             </div>

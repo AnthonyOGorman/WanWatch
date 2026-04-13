@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { requireApiAuth } from "@/lib/apiAuth";
 import { prisma } from "@/lib/db";
 
-export async function POST() {
-  const { unauthorized } = await requireApiAuth();
+export async function POST(req: NextRequest) {
+  const { unauthorized } = await requireApiAuth(req);
   if (unauthorized) return unauthorized;
 
   const reqRow = await prisma.pollRequest.create({ data: {} });

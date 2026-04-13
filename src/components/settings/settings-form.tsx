@@ -10,7 +10,9 @@ type Settings = {
   pollIntervalMinutes: number;
   retentionDays: number;
   enabled: boolean;
-  ipProvider: "ipify";
+  ipProvider: "ipify" | "ifconfig.me" | "icanhazip" | "checkip-aws";
+  pollTimeoutSeconds: number;
+  webhookUrl: string;
 };
 
 export function SettingsForm() {
@@ -109,15 +111,51 @@ export function SettingsForm() {
               <div className="mt-1 text-xs text-muted">1–60 minutes (default 5).</div>
             </div>
             <div>
-              <div className="text-sm text-muted">Provider</div>
+              <div className="text-sm text-muted">Poll timeout (seconds)</div>
+              <Input
+                type="number"
+                min={1}
+                max={30}
+                value={settings.pollTimeoutSeconds}
+                onChange={(e) => setSettings({ ...settings, pollTimeoutSeconds: Number(e.target.value) })}
+              />
+              <div className="mt-1 text-xs text-muted">1–30 seconds (default 5).</div>
+            </div>
+            <div>
+              <div className="text-sm text-muted">Primary provider</div>
               <select
                 className="mt-0 h-10 w-full rounded-md border border-border bg-black/20 px-3 text-sm text-text outline-none focus:ring-2 focus:ring-brand/60"
                 value={settings.ipProvider}
                 onChange={(e) => setSettings({ ...settings, ipProvider: e.target.value as Settings["ipProvider"] })}
               >
-                <option value="ipify">ipify</option>
+                <option value="ipify">ipify (api.ipify.org)</option>
+                <option value="ifconfig.me">ifconfig.me</option>
+                <option value="icanhazip">icanhazip.com</option>
+                <option value="checkip-aws">checkip.amazonaws.com</option>
               </select>
-              <div className="mt-1 text-xs text-muted">More providers can be added later.</div>
+              <div className="mt-1 text-xs text-muted">Other providers are tried automatically if this one fails.</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Notifications</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div>
+            <div className="text-sm text-muted">Webhook URL (called on IP change)</div>
+            <Input
+              type="url"
+              placeholder="https://hooks.slack.com/… or https://discord.com/api/webhooks/…"
+              value={settings.webhookUrl}
+              onChange={(e) => setSettings({ ...settings, webhookUrl: e.target.value })}
+            />
+            <div className="mt-1 text-xs text-muted">
+              POSTs JSON:{" "}
+              <code className="rounded bg-black/20 px-1">{"{ event, ts, fromIp, toIp, isp?, country? }"}</code>.
+              Leave blank to disable.
             </div>
           </div>
         </CardContent>

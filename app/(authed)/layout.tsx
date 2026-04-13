@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import logo from "../../logo.png";
+import packageJson from "../../package.json";
 import { requireSession } from "@/lib/session";
 import { LogoutButton } from "@/components/logout-button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -9,6 +10,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default async function AuthedLayout({ children }: { children: React.ReactNode }) {
   const session = await requireSession();
   if (!session) redirect("/login");
+  const version = packageJson.version;
 
   return (
     <div className="min-h-screen">
@@ -30,7 +32,8 @@ export default async function AuthedLayout({ children }: { children: React.React
               </Link>
             </nav>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <span className="rounded border border-border/70 px-2 py-1 text-xs text-muted">v{version}</span>
             <ThemeToggle />
             <LogoutButton />
           </div>

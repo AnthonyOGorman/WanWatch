@@ -34,7 +34,7 @@ cp .env.example .env
 - `COOKIE_SECRET` (long random string, at least 32 chars)
 3. Start services:
 ```bash
-docker compose up --build
+docker compose up
 ```
 4. Open:
 - `http://localhost:3000`
@@ -56,6 +56,12 @@ pnpm prisma:deploy
 ```bash
 pnpm dev
 pnpm worker:dev
+```
+
+Or run both with local image builds:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
 ## Configuration

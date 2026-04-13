@@ -1,6 +1,6 @@
 services:
   web:
-    build: .
+    image: aogorman/wanwatch:latest
     ports:
       - "3000:3000"
     env_file:
@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
 
   worker:
-    build: .
+    image: aogorman/wanwatch:latest
     env_file:
       - .env
     volumes:

@@ -19,3 +19,20 @@ export const env = createEnv({
     API_KEY: process.env.API_KEY
   }
 });
+
+let validated = false;
+
+/**
+ * Force validation of server-side environment variables on first runtime use.
+ * This keeps build-time behavior intact while enforcing the schema in live code paths.
+ */
+export function getValidatedEnv() {
+  if (!validated) {
+    void env.ADMIN_PASSWORD;
+    void env.COOKIE_SECRET;
+    void env.DATABASE_URL;
+    void env.API_KEY;
+    validated = true;
+  }
+  return env;
+}

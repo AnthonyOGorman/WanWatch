@@ -1,5 +1,6 @@
 import { getIronSession, type IronSession, type SessionOptions } from "iron-session";
 import { cookies } from "next/headers";
+import { getValidatedEnv } from "@/lib/env";
 
 export type WanWatchSessionData = {
   isLoggedIn?: boolean;
@@ -11,20 +12,26 @@ function parseCookieSecureEnv(raw: string | undefined): boolean {
   return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on";
 }
 
-const sessionOptions: SessionOptions = {
-  cookieName: "wanwatch_session",
-  // Must not throw during `next build` when env vars may be missing.
-  password: process.env.COOKIE_SECRET ?? "BUILD_TIME_PLACEHOLDER_SECRET_CHANGE_ME",
-  cookieOptions: {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: parseCookieSecureEnv(process.env.COOKIE_SECURE)
-  }
-};
+function getSessionOptions(): SessionOptions {
+  const password =
+    process.env.SKIP_ENV_VALIDATION === "1"
+      ? (process.env.COOKIE_SECRET ?? "BUILD_TIME_PLACEHOLDER_SECRET_CHANGE_ME")
+      : getValidatedEnv().COOKIE_SECRET;
+
+  return {
+    cookieName: "wanwatch_session",
+    password,
+    cookieOptions: {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: parseCookieSecureEnv(process.env.COOKIE_SECURE)
+    }
+  };
+}
 
 export async function getSession(): Promise<IronSession<WanWatchSessionData>> {
   const cookieStore = await cookies();
-  return getIronSession<WanWatchSessionData>(cookieStore, sessionOptions);
+  return getIronSession<WanWatchSessionData>(cookieStore, getSessionOptions());
 }
 
 export async function requireSession() {

@@ -2,9 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSession } from "@/lib/session";
 import { verifyAdminPassword } from "@/lib/auth";
 import { rateLimitLogin } from "@/lib/rateLimit";
+import { getValidatedEnv } from "@/lib/env";
 
 export async function POST(req: NextRequest) {
-  if (!process.env.ADMIN_PASSWORD || !process.env.COOKIE_SECRET) {
+  try {
+    void getValidatedEnv().ADMIN_PASSWORD;
+    void getValidatedEnv().COOKIE_SECRET;
+  } catch {
     return NextResponse.json(
       { error: "Server not configured (missing ADMIN_PASSWORD / COOKIE_SECRET)" },
       { status: 500 }

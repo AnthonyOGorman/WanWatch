@@ -114,6 +114,7 @@ curl -H "Authorization: Bearer $API_KEY" http://localhost:3000/api/stats
 
 ## Troubleshooting
 
+- If login succeeds but you are redirected back to `/login` on HTTP deployments, set `COOKIE_SECURE=false` in your env file.
 - If dashboard shows no data, verify worker logs and hit:
   - `http://localhost:3000/api/logs?limit=5&debug=1` (non-production only)
   - This confirms which DB file the web process is reading.

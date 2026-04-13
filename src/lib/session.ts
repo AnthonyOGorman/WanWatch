@@ -5,6 +5,12 @@ export type WanWatchSessionData = {
   isLoggedIn?: boolean;
 };
 
+function parseCookieSecureEnv(raw: string | undefined): boolean {
+  if (!raw) return process.env.NODE_ENV === "production";
+  const normalized = raw.trim().toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on";
+}
+
 const sessionOptions: SessionOptions = {
   cookieName: "wanwatch_session",
   // Must not throw during `next build` when env vars may be missing.
@@ -12,7 +18,7 @@ const sessionOptions: SessionOptions = {
   cookieOptions: {
     httpOnly: true,
     sameSite: "strict",
-    secure: process.env.NODE_ENV === "production"
+    secure: parseCookieSecureEnv(process.env.COOKIE_SECURE)
   }
 };
 

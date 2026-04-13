@@ -4,6 +4,10 @@
 
 # WanWatch
 
+<p align="center">
+  <img src="./docs/images/dashboard-demo.png" alt="WanWatch dashboard demo" width="1100" />
+</p>
+
 WanWatch is a self-hosted WAN IPv4 monitor with:
 
 - Live dashboard charts (latency, success/error, IP changes)

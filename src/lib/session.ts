@@ -1,12 +1,12 @@
 import { getIronSession, type IronSession, type SessionOptions } from "iron-session";
 import { cookies } from "next/headers";
 
-export type WanLoggerSessionData = {
+export type WanWatchSessionData = {
   isLoggedIn?: boolean;
 };
 
 const sessionOptions: SessionOptions = {
-  cookieName: "wanlogger_session",
+  cookieName: "wanwatch_session",
   // Must not throw during `next build` when env vars may be missing.
   password: process.env.COOKIE_SECRET ?? "BUILD_TIME_PLACEHOLDER_SECRET_CHANGE_ME",
   cookieOptions: {
@@ -16,9 +16,9 @@ const sessionOptions: SessionOptions = {
   }
 };
 
-export async function getSession(): Promise<IronSession<WanLoggerSessionData>> {
+export async function getSession(): Promise<IronSession<WanWatchSessionData>> {
   const cookieStore = await cookies();
-  return getIronSession<WanLoggerSessionData>(cookieStore, sessionOptions);
+  return getIronSession<WanWatchSessionData>(cookieStore, sessionOptions);
 }
 
 export async function requireSession() {

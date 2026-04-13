@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
     return path.join(cwd, raw);
   })();
 
-  const file = sqlitePath ?? path.join(cwd, "data", "wanlogger.db");
+  const file = sqlitePath ?? path.join(cwd, "data", "wanwatch.db");
   let fileExists = false;
   let fileSize = 0;
   try {

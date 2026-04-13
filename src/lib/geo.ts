@@ -11,7 +11,7 @@ export async function lookupGeo(ip: string): Promise<GeoResult | null> {
     const t = setTimeout(() => controller.abort(), 5000);
     const res = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,isp`, {
       signal: controller.signal,
-      headers: { "user-agent": "WanLogger/0.1" }
+      headers: { "user-agent": "WanWatch/0.1" }
     });
     clearTimeout(t);
 

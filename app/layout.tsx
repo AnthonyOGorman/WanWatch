@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "WanLogger",
+  title: "WanWatch",
   description: "WAN IP logger dashboard"
 };
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const themeScript = `
 (function(){
   try {
-    var t = localStorage.getItem('wl-theme') || 'dark';
+    var t = localStorage.getItem('wanwatch-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', t);
   } catch(e){}
 })();

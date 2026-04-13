@@ -2,8 +2,14 @@
 node_modules
 .next
 dist
+.DS_Store
+
+# Secrets (never commit)
 .env
 .env.local
-.DS_Store
-data
+.env.*
+!.env.example
 
+# Runtime data (local DB, exports, etc.)
+data/*
+!data/.gitkeep

@@ -50,39 +50,39 @@ export async function GET() {
 
   const out = [
     prom(
-      "wanlogger_polls_total",
+      "wanwatch_polls_total",
       "Total number of polls since start",
       "counter",
       [
-        `wanlogger_polls_total{result="ok"} ${okCount}`,
-        `wanlogger_polls_total{result="error"} ${errCount}`
+        `wanwatch_polls_total{result="ok"} ${okCount}`,
+        `wanwatch_polls_total{result="error"} ${errCount}`
       ]
     ),
     prom(
-      "wanlogger_ip_changes_total",
+      "wanwatch_ip_changes_total",
       "Number of IP changes detected in the last 24 hours",
       "gauge",
-      [`wanlogger_ip_changes_total ${ipChanges}`]
+      [`wanwatch_ip_changes_total ${ipChanges}`]
     ),
     prom(
-      "wanlogger_last_poll_age_seconds",
+      "wanwatch_last_poll_age_seconds",
       "Seconds since the last poll attempt",
       "gauge",
-      [`wanlogger_last_poll_age_seconds ${lastPollAgeSeconds ?? "NaN"}`]
+      [`wanwatch_last_poll_age_seconds ${lastPollAgeSeconds ?? "NaN"}`]
     ),
     prom(
-      "wanlogger_worker_alive",
+      "wanwatch_worker_alive",
       "1 if the worker polled recently, 0 otherwise",
       "gauge",
-      [`wanlogger_worker_alive ${workerAlive ? 1 : 0}`]
+      [`wanwatch_worker_alive ${workerAlive ? 1 : 0}`]
     ),
     prom(
-      "wanlogger_response_ms",
+      "wanwatch_response_ms",
       "Poll response time percentiles over the last 24 hours",
       "gauge",
       [
-        `wanlogger_response_ms{quantile="0.5"} ${p50 ?? "NaN"}`,
-        `wanlogger_response_ms{quantile="0.95"} ${p95 ?? "NaN"}`
+        `wanwatch_response_ms{quantile="0.5"} ${p50 ?? "NaN"}`,
+        `wanwatch_response_ms{quantile="0.95"} ${p95 ?? "NaN"}`
       ]
     )
   ].join("\n");

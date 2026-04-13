@@ -41,7 +41,7 @@ export async function fireWebhook(url: string, payload: WebhookPayload): Promise
     await fetch(url, {
       method: "POST",
       signal: controller.signal,
-      headers: { "content-type": "application/json", "user-agent": "WanLogger/0.1" },
+      headers: { "content-type": "application/json", "user-agent": "WanWatch/0.1" },
       body: JSON.stringify(payload)
     });
     clearTimeout(t);

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
+import logo from "../../logo.png";
 import { requireSession } from "@/lib/session";
 import { LogoutButton } from "@/components/logout-button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -13,8 +15,8 @@ export default async function AuthedLayout({ children }: { children: React.React
       <header className="sticky top-0 z-10 border-b border-border bg-black/20 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Link href="/dashboard" className="text-sm font-semibold text-text">
-              WanLogger
+            <Link href="/dashboard" className="flex items-center gap-2 text-sm font-semibold text-text">
+              <Image src={logo} alt="WanWatch logo" className="h-20 w-auto" priority />
             </Link>
             <nav className="flex items-center gap-3 text-sm text-muted">
               <Link href="/dashboard" className="hover:text-text">

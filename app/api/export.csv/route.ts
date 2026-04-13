@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
   return new NextResponse(lines.join("\n"), {
     headers: {
       "content-type": "text/csv; charset=utf-8",
-      "content-disposition": 'attachment; filename="wanlogger-logs.csv"'
+      "content-disposition": 'attachment; filename="wanwatch-logs.csv"'
     }
   });
 }

@@ -50,7 +50,7 @@ export async function fetchWanIpv4(
   try {
     const res = await fetch(config.url, {
       signal: controller.signal,
-      headers: { "user-agent": "WanLogger/0.1" }
+      headers: { "user-agent": "WanWatch/0.1" }
     });
     const responseMs = Date.now() - start;
     if (!res.ok) {

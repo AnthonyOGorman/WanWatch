@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
   return new NextResponse(body, {
     headers: {
       "content-type": "application/json; charset=utf-8",
-      "content-disposition": 'attachment; filename="wanlogger-logs.json"'
+      "content-disposition": 'attachment; filename="wanwatch-logs.json"'
     }
   });
 }

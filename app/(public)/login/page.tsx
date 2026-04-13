@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import logo from "../../../logo.png";
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");
@@ -39,7 +41,9 @@ export default function LoginPage() {
     <main className="mx-auto flex min-h-screen max-w-lg items-center px-6">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>WanLogger</CardTitle>
+          <CardTitle className="flex justify-center">
+            <Image src={logo} alt="WanWatch logo" className="h-48 w-auto" priority />
+          </CardTitle>
           <div className="mt-1 text-sm text-muted">Sign in to view dashboard and logs.</div>
         </CardHeader>
         <CardContent>
@@ -64,4 +68,3 @@ export default function LoginPage() {
     </main>
   );
 }
-

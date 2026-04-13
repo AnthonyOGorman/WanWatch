@@ -6,7 +6,7 @@ export const env = createEnv({
   server: {
     ADMIN_PASSWORD: z.string().min(1),
     COOKIE_SECRET: z.string().min(32),
-    DATABASE_URL: z.string().min(1).default("file:/app/data/wanlogger.db"),
+    DATABASE_URL: z.string().min(1).default("file:/app/data/wanwatch.db"),
     TZ: z.string().optional(),
     API_KEY: z.string().min(16).optional()
   },
